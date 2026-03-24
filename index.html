@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jindal Yarns Private Limited — The Art of Thread Since 1982</title>
+  <meta name="description" content="Jindal Yarns Private Limited — Premium manufacturer of Shoddy Acrylic, Woollen, Blended & Recycled Cotton yarn since 1982. ISO 9001:2008 Certified. Govt. of India Recognised Export House.">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://unpkg.com">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Film Grain -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Zoom Modal -->
+  <div class="image-modal-backdrop" id="imageModal">
+    <img src="" alt="Zoomed product view" id="modalImage">
+  </div>
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <img src="assets/brand_shield_logo.png" alt="Jindal Yarns Logo" class="nav-logo" loading="eager">
+      <div>
+        <span class="nav-brand-text">Jindal Yarns</span>
+        <span class="nav-brand-sub">Private Limited</span>
+      </div>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#hero" class="active">Home</a></li>
+      <li><a href="#heritage">Heritage</a></li>
+      <li><a href="#yarn-catalog">Yarn</a></li>
+      <li><a href="#home-textiles">Textiles</a></li>
+      <li><a href="#exports">Global</a></li>
+      <li><a href="#footer">Contact</a></li>
+    </ul>
+
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="nav-mobile" id="mobileNav">
+    <a href="#hero">Home</a>
+    <a href="#heritage">Heritage</a>
+    <a href="#yarn-catalog">Yarn</a>
+    <a href="#home-textiles">Textiles</a>
+    <a href="#exports">Global</a>
+    <a href="#footer">Contact</a>
+  </div>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="hero">
+    <canvas id="webgl-canvas"></canvas>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <img src="assets/brand_shield_logo.png" alt="Jindal Yarns Shield" class="hero-logo" fetchpriority="high">
+      <h1 class="hero-title">
+        <span>The Art of Thread</span>
+        <span>Since 1982</span>
+      </h1>
+      <p class="hero-tagline">Crafting excellence in every fiber</p>
+      <div class="hero-badges">
+        <div class="hero-badge">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+          ISO 9001:2008 Certified
+        </div>
+        <div class="hero-badge">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          Govt. of India Recognised Export House
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-cue">
+      <span>Scroll</span>
+      <div class="chevron"></div>
+    </div>
+  </section>
+
+  <!-- ===================== HERITAGE ===================== -->
+  <section class="section heritage" id="heritage">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label">Our Legacy</div>
+        <h2 class="section-title">Four Decades of<br>Textile Mastery</h2>
+        <p class="section-subtitle">From humble beginnings in Panipat to becoming a globally recognised export house, the Jindal legacy stands for uncompromising quality.</p>
+      </div>
+
+      <div class="heritage-grid">
+        <div class="heritage-image-wrapper reveal">
+          <img src="assets/products_collection.png" alt="Jindal Yarns — Heritage collection of premium textiles" loading="lazy" decoding="async">
+        </div>
+
+        <div class="heritage-timeline reveal">
+          <div class="timeline-item">
+            <div class="timeline-year">1982</div>
+            <p class="timeline-text">Late <strong>Mr. Mam Chand Jindal</strong> founded Jindal Yarns Private Limited in Panipat, Haryana, with a vision to produce world-class yarn and home textiles.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">1990s</div>
+            <p class="timeline-text">Expanded into blended and recycled cotton yarns, establishing sustainable manufacturing practices ahead of their time.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2000s</div>
+            <p class="timeline-text">Achieved <strong>ISO 9001:2008</strong> certification and earned <strong>Govt. of India Recognised Export House</strong> status. <strong>Mr. Amit Jindal</strong> and <strong>Mr. Jagrit Jindal</strong> joined as directors.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">Today</div>
+            <p class="timeline-text">A vertically integrated manufacturer with <strong>50+ skilled professionals</strong>, exporting premium yarn and textiles to <strong>5+ countries</strong> worldwide.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="heritage-stats reveal">
+        <div class="stat-card" data-tilt>
+          <span class="stat-number" data-count="42">0</span>
+          <span class="stat-label">Years of Excellence</span>
+        </div>
+        <div class="stat-card" data-tilt>
+          <span class="stat-number" data-count="50">0</span>
+          <span class="stat-label">Skilled Professionals</span>
+        </div>
+        <div class="stat-card" data-tilt>
+          <span class="stat-number" data-count="5">0</span>
+          <span class="stat-label">Export Countries</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== YARN CATALOG ===================== -->
+  <section class="section yarn-catalog" id="yarn-catalog">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label">Yarn Collection</div>
+        <h2 class="section-title">Premium Yarn<br>for Every Need</h2>
+        <p class="section-subtitle">From shoddy acrylic to fine half-wool blends, our yarn portfolio serves diverse global markets.</p>
+      </div>
+
+      <div class="yarn-grid">
+        <!-- Card 1: Shoddy Acrylic -->
+        <div class="yarn-card reveal" data-tilt>
+          <div class="yarn-card-image">
+            <img src="assets/yarn_spools.png" alt="Shoddy Acrylic Yarn — vibrant color range" loading="lazy" decoding="async" class="zoomable" data-zoom-src="assets/yarn_spools.png">
+            <div class="zoom-overlay"><span>View Fiber Detail</span></div>
+          </div>
+          <div class="yarn-card-body">
+            <h3 class="yarn-card-title">Shoddy Acrylic Yarn</h3>
+            <p class="yarn-card-desc">Versatile acrylic yarn produced from recycled fibers. Available in a wide spectrum of vibrant colors for knitting, weaving, and industrial applications.</p>
+            <div class="yarn-card-specs">
+              <span class="yarn-spec">Recycled Fiber</span>
+              <span class="yarn-spec">Multi-Color</span>
+              <span class="yarn-spec">Industrial Grade</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Woollen / Half Wool -->
+        <div class="yarn-card reveal" data-tilt>
+          <div class="yarn-card-image">
+            <img src="assets/hero_yarn_texture.png" alt="Woollen and Half Wool Yarn — premium fiber" loading="lazy" decoding="async" class="zoomable" data-zoom-src="assets/hero_yarn_texture.png">
+            <div class="zoom-overlay"><span>View Fiber Detail</span></div>
+          </div>
+          <div class="yarn-card-body">
+            <h3 class="yarn-card-title">Woollen & Half Wool Yarn</h3>
+            <p class="yarn-card-desc">Premium 50% wool blended yarn offering the warmth and softness of natural wool with enhanced durability. Ideal for luxury blankets and apparel.</p>
+            <div class="yarn-card-specs">
+              <span class="yarn-spec">50% Wool</span>
+              <span class="yarn-spec">Natural Warmth</span>
+              <span class="yarn-spec">Luxury Grade</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Blended / Recycled Cotton -->
+        <div class="yarn-card reveal" data-tilt>
+          <div class="yarn-card-image">
+            <img src="assets/products_collection.png" alt="Blended and Recycled Cotton Yarn" loading="lazy" decoding="async" class="zoomable" data-zoom-src="assets/products_collection.png">
+            <div class="zoom-overlay"><span>View Fiber Detail</span></div>
+          </div>
+          <div class="yarn-card-body">
+            <h3 class="yarn-card-title">Blended & Recycled Cotton</h3>
+            <p class="yarn-card-desc">Sustainable cotton blended yarn available in both coloured and white variants. Eco-conscious manufacturing meets premium quality for modern textiles.</p>
+            <div class="yarn-card-specs">
+              <span class="yarn-spec">Recycled Cotton</span>
+              <span class="yarn-spec">Coloured / White</span>
+              <span class="yarn-spec">Eco-Friendly</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOME TEXTILES ===================== -->
+  <section class="section home-textiles" id="home-textiles">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label">Home Textiles Suite</div>
+        <h2 class="section-title">Complete Home<br>Textile Solutions</h2>
+        <p class="section-subtitle">From luxurious blankets to precision-cut bedsheets, every product reflects four decades of expertise.</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="textiles-tabs reveal" id="textilesTabs">
+        <button class="textiles-tab active" data-panel="blankets">Blankets</button>
+        <button class="textiles-tab" data-panel="bedsheets">Bedsheets</button>
+        <button class="textiles-tab" data-panel="towels">Towels</button>
+        <button class="textiles-tab" data-panel="carpets">Carpets</button>
+        <button class="textiles-tab" data-panel="pillows">Pillows</button>
+      </div>
+
+      <!-- Panel: Blankets -->
+      <div class="textiles-panel active" id="panel-blankets">
+        <div class="textiles-bento">
+          <div class="textile-item featured">
+            <img src="assets/blankets.png" alt="Luxury Mink Blankets" loading="lazy" decoding="async" class="zoomable" data-zoom-src="assets/blankets.png">
+            <div class="textile-item-overlay">
+              <h3 class="textile-item-title">Mink Blankets</h3>
+              <p class="textile-item-desc">Ultra-soft mink blankets with premium embossing. Available in single to king sizes with luxurious drape.</p>
+            </div>
+          </div>
+          <div class="textile-item" data-tilt>
+            <svg class="textile-icon" viewBox="0 0 24 24"><path d="M20 10V8A2 2 0 0 0 18 6H6A2 2 0 0 0 4 8v2a2 2 0 0 0-2 2v6h2.67l1 2h1.67l1-2h7.32l1 2h1.67l1-2H22v-6a2 2 0 0 0-2-2z"/></svg>
+            <h3 class="textile-item-title">Flannel Blankets</h3>
+            <p class="textile-item-desc">Brushed flannel weave for exceptional warmth. Ideal for cold climates and export markets.</p>
+          </div>
+          <div class="textile-item" data-tilt>
+            <svg class="textile-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+            <h3 class="textile-item-title">Polar Fleece</h3>
+            <p class="textile-item-desc">Lightweight, anti-pill polar fleece for outdoor and everyday use. Superior moisture wicking.</p>
+          </div>
+          <div class="textile-item" data-tilt>
+            <svg class="textile-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <h3 class="textile-item-title">Donation Blankets</h3>
+            <p class="textile-item-desc">Cost-effective blankets manufactured for relief, institutional, and charitable purposes. Bulk export-ready.</p>
+          </div>
+          <div class="textile-item" data-tilt>
+            <svg class="textile-icon" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+            <h3 class="textile-item-title">Non-Woven Blankets</h3>
+            <p class="textile-item-desc">Industrial non-woven process blankets. Light, durable, and available in custom colours and weights.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel: Bedsheets -->
+      <div class="textiles-panel" id="panel-bedsheets">
+        <div class="textiles-bento" style="grid-template-columns: 1fr;">
+          <div class="textile-item">
+            <h3 class="textile-item-title" style="margin-bottom: 16px;">Bedsheet Collection — Precision-Cut Sizing</h3>
+            <p class="textile-item-desc" style="margin-bottom: 20px;">Available in premium cotton blends, each size crafted to exacting dimensions for global markets.</p>
+            <table class="size-table">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>Dimensions (cm)</th>
+                  <th>Dimensions (inches)</th>
+                  <th>Best For</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Single</td><td>152 × 228</td><td>60 × 90</td><td>Single beds, hostel use</td></tr>
+                <tr><td>Double</td><td>228 × 228</td><td>90 × 90</td><td>Standard double beds</td></tr>
+                <tr><td>King</td><td>228 × 274</td><td>90 × 108</td><td>King-size beds</td></tr>
+                <tr><td>Super King</td><td>274 × 274</td><td>108 × 108</td><td>Premium / export markets</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel: Towels -->
+      <div class="textiles-panel" id="panel-towels">
+        <div class="textiles-bento" style="grid-template-columns: 1fr 1fr;">
+          <div class="textile-item featured" style="grid-column: span 1; grid-row: span 1;">
+            <img src="assets/towels.png" alt="Premium Cotton Terry Towels" loading="lazy" decoding="async" class="zoomable" data-zoom-src="assets/towels.png">
+            <div class="textile-item-overlay">
+              <h3 class="textile-item-title">Cotton Terry Towels</h3>
+              <p class="textile-item-desc">300–800 GSM range for hotel, spa, and retail markets.</p>
+            </div>
+          </div>
+          <div class="textile-item" data-tilt>
+            <svg class="textile-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <h3 class="textile-item-title">GSM Range: 300–800</h3>
+            <p class="textile-item-desc">From lightweight 300 GSM hand towels to ultra-plush 800 GSM bath sheets. 100% cotton terry construction with reinforced selvedge for export-grade durability.</p>
+            <div class="yarn-card-specs" style="margin-top: 16px;">
+              <span class="yarn-spec">100% Cotton</span>
+              <span class="yarn-spec">300–800 GSM</span>
+              <span class="yarn-spec">Hotel Grade</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel: Carpets -->
+      <div class="textiles-panel" id="panel-carpets">
+        <div class="textiles-bento" style="grid-template-columns: 1fr 1fr;">
+          <div class="textile-item" data-tilt>
+            <svg class="textile-icon" viewBox="0 0 24 24"><path d="M2 4v16h20V4H2zm4 14H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V8h2v2zm10 8H8v-6h8v6zm0-8H8V8h8v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V8h2v2z"/></svg>
+            <h3 class="textile-item-title">Woven Carpets</h3>
+            <p class="textile-item-desc">Traditional and contemporary woven carpet designs. Available in custom sizes and patterns for residential and hospitality projects.</p>
+          </div>
+          <div class="textile-item" data-tilt>
+            <svg class="textile-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+            <h3 class="textile-item-title">Non-Woven Carpets</h3>
+            <p class="textile-item-desc">Industrial non-woven carpet solutions for events, exhibitions, and commercial flooring. Cost-effective with quick turnaround.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel: Pillows -->
+      <div class="textiles-panel" id="panel-pillows">
+        <div class="textiles-bento" style="grid-template-columns: 1fr;">
+          <div class="textile-item" data-tilt>
+            <svg class="textile-icon" viewBox="0 0 24 24"><path d="M20 10V8A2 2 0 0 0 18 6H6A2 2 0 0 0 4 8v2a2 2 0 0 0-2 2v6h2.67l1 2h1.67l1-2h7.32l1 2h1.67l1-2H22v-6a2 2 0 0 0-2-2z"/></svg>
+            <h3 class="textile-item-title">Memory Foam Neck Pillows</h3>
+            <p class="textile-item-desc">Ergonomic memory foam neck pillows for travel and home. Contoured design with removable, washable covers. Slow-rebound memory foam for optimal support.</p>
+            <div class="yarn-card-specs" style="margin-top: 16px;">
+              <span class="yarn-spec">Memory Foam</span>
+              <span class="yarn-spec">Ergonomic</span>
+              <span class="yarn-spec">Washable Cover</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GLOBAL EXPORTS ===================== -->
+  <section class="section exports" id="exports">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label">Global Presence</div>
+        <h2 class="section-title">Exporting Quality<br>Across Continents</h2>
+        <p class="section-subtitle">Recognised by the Government of India as an Export House, our products reach discerning buyers across 5+ countries.</p>
+      </div>
+
+      <div class="exports-content">
+        <div class="exports-map reveal">
+          <!-- Simplified world map SVG -->
+          <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+            <!-- Simplified world landmass shapes -->
+            <ellipse cx="200" cy="200" rx="120" ry="100" opacity="0.3" fill="var(--navy-light)"/>  <!-- Americas -->
+            <ellipse cx="460" cy="190" rx="80" ry="120" opacity="0.3" fill="var(--navy-light)"/>   <!-- Europe/Africa -->
+            <ellipse cx="620" cy="200" rx="60" ry="80" opacity="0.3" fill="var(--navy-light)"/>    <!-- Middle East -->
+            <ellipse cx="750" cy="180" rx="100" ry="100" opacity="0.3" fill="var(--navy-light)"/>  <!-- Asia -->
+            <ellipse cx="880" cy="300" rx="60" ry="50" opacity="0.3" fill="var(--navy-light)"/>   <!-- Australia -->
+          </svg>
+          <!-- Export dots positioned over regions -->
+          <div class="map-dot" style="top: 35%; left: 60%;" title="Middle East"></div>
+          <div class="map-dot" style="top: 30%; left: 48%;" title="Europe" style="animation-delay: 0.3s;"></div>
+          <div class="map-dot" style="top: 50%; left: 50%;" title="Africa" style="animation-delay: 0.6s;"></div>
+          <div class="map-dot" style="top: 28%; left: 73%;" title="South Asia" style="animation-delay: 0.9s;"></div>
+          <div class="map-dot" style="top: 32%; left: 80%;" title="East Asia" style="animation-delay: 1.2s;"></div>
+        </div>
+
+        <div class="export-info reveal">
+          <h3 style="font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 8px;">Trusted Worldwide</h3>
+          <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.8; margin-bottom: 32px;">Our dedicated export team ensures seamless international logistics, customs compliance, and consistent quality standards for every shipment.</p>
+
+          <div class="export-countries">
+            <div class="country-card" data-tilt>
+              <div class="country-name">Middle East</div>
+              <div class="country-detail">Blankets & Yarn</div>
+            </div>
+            <div class="country-card" data-tilt>
+              <div class="country-name">Europe</div>
+              <div class="country-detail">Home Textiles</div>
+            </div>
+            <div class="country-card" data-tilt>
+              <div class="country-name">Africa</div>
+              <div class="country-detail">Donation Blankets</div>
+            </div>
+            <div class="country-card" data-tilt>
+              <div class="country-name">South Asia</div>
+              <div class="country-detail">Yarn & Textiles</div>
+            </div>
+            <div class="country-card" data-tilt>
+              <div class="country-name">East Asia</div>
+              <div class="country-detail">Raw Materials</div>
+            </div>
+            <div class="country-card" data-tilt>
+              <div class="country-name">Americas</div>
+              <div class="country-detail">Specialty Yarn</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER / CONTACT ===================== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand-title">Jindal Yarns Pvt. Ltd.</div>
+          <p class="footer-brand-text">Established in 1982, Jindal Yarns is an ISO 9001:2008 certified manufacturer and Government of India Recognised Export House, producing premium yarn and home textiles from Panipat, Haryana.</p>
+        </div>
+
+        <div>
+          <div class="footer-heading">Quick Links</div>
+          <ul class="footer-links">
+            <li><a href="#heritage">Heritage</a></li>
+            <li><a href="#yarn-catalog">Yarn Catalog</a></li>
+            <li><a href="#home-textiles">Home Textiles</a></li>
+            <li><a href="#exports">Global Exports</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-heading">Products</div>
+          <ul class="footer-links">
+            <li><a href="#yarn-catalog">Shoddy Acrylic Yarn</a></li>
+            <li><a href="#yarn-catalog">Woollen Yarn</a></li>
+            <li><a href="#home-textiles">Blankets</a></li>
+            <li><a href="#home-textiles">Bedsheets</a></li>
+            <li><a href="#home-textiles">Towels</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-heading">Contact Us</div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <span>E-1 Old Industrial Area,<br>Near Hali Park, Panipat,<br>Haryana, India</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <span><a href="mailto:jindalint77@gmail.com">jindalint77@gmail.com</a><br><a href="mailto:info.jindalyarns@gmail.com">info.jindalyarns@gmail.com</a></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2024 Jindal Yarns Private Limited. All rights reserved.</span>
+        <span>Crafted with precision in Panipat, India.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== SCRIPTS ===================== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
