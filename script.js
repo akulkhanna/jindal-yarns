@@ -52,6 +52,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ========================================================
+     1.5 CUSTOM HIGH-TECH CURSOR
+     ======================================================== */
+  const cursor = document.getElementById('customCursor');
+  const cursorFollower = document.getElementById('customCursorFollower');
+
+  if (cursor && cursorFollower) {
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let followerX = mouseX;
+    let followerY = mouseY;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      // The main dot follows instantly
+      cursor.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+    }, { passive: true });
+
+    // The ring follower interpolates smoothly
+    gsap.ticker.add(() => {
+      followerX += (mouseX - followerX) * 0.15;
+      followerY += (mouseY - followerY) * 0.15;
+      cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px)`;
+    });
+
+    // Hover effects on interactables
+    const interactables = document.querySelectorAll('a, button, .zoomable, .textiles-tab');
+    interactables.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorFollower.classList.add('active');
+        cursor.classList.add('active');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorFollower.classList.remove('active');
+        cursor.classList.remove('active');
+        // Magnetic snap back reset
+        gsap.to(el, { x: 0, y: 0, duration: 0.3 });
+      });
+      
+      // Magnetic hover logic
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        // Calculate distance from center of element
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        // Move element slightly towards cursor
+        gsap.to(el, { x: x * 0.2, y: y * 0.2, duration: 0.3, ease: 'power2.out' });
+      });
+    });
+  }
+
+
+  /* ========================================================
      2. THREE.JS — 3D Yarn Thread Particles
      ======================================================== */
   function initWebGL() {
@@ -213,13 +266,28 @@ document.addEventListener('DOMContentLoaded', () => {
       const t = clock.getElapsedTime();
       const dt = clock.getDelta();
 
-      // Update particle positions (gentle drift)
+        // Update particle positions (gentle drift)
       const pos = geometry.attributes.position.array;
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
         pos[i3]     += velocities[i3]     + Math.sin(t * 0.5 + i) * 0.0005;
         pos[i3 + 1] += velocities[i3 + 1] + Math.cos(t * 0.3 + i) * 0.0005;
         pos[i3 + 2] += velocities[i3 + 2];
+
+        // Interactive Mouse Repulsion Physics
+        // scale mouseX/Y to match 3D space rough bounds (-6 to 6)
+        const mx = mouseX * 6;
+        const my = mouseY * 6;
+        const dx = pos[i3] - mx;
+        const dy = pos[i3 + 1] - my;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        
+        if (dist < 2.5) {
+          const force = (2.5 - dist) * 0.02;
+          pos[i3]     += (dx / dist) * force;
+          pos[i3 + 1] += (dy / dist) * force;
+          pos[i3 + 2] += force * 0.5; // push them slightly forward too
+        }
 
         // Wrap around
         if (pos[i3] >  6) pos[i3] = -6;

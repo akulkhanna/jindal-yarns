@@ -61,6 +61,7 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  cursor: none;
 }
 
 ::selection {
@@ -88,6 +89,7 @@ a {
   color: var(--gold);
   text-decoration: none;
   transition: color var(--transition);
+  cursor: none;
 }
 a:hover {
   color: var(--gold-light);
@@ -110,6 +112,49 @@ a:hover {
   25%      { transform: translate(-5%, -5%); }
   50%      { transform: translate(5%, 5%); }
   75%      { transform: translate(-3%, 3%); }
+}
+
+/* ---------- Custom High-Tech Cursor ---------- */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background-color: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+.custom-cursor-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--gold-dark);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s, transform 0.1s;
+}
+
+.custom-cursor.active {
+  width: 0px;
+  height: 0px;
+  background-color: transparent;
+}
+
+.custom-cursor-follower.active {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(197, 160, 89, 0.1);
+  border-color: var(--gold);
+  backdrop-filter: blur(2px);
 }
 
 /* ---------- Typography ---------- */
