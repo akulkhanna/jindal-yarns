@@ -387,17 +387,64 @@ h1, h2, h3, h4 {
   padding: 0 24px;
 }
 
-.hero-logo {
-  width: 100px;
-  height: 100px;
+/* Logo Render Container */
+.logo-render-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
   margin: 0 auto 28px;
-  filter: drop-shadow(0 0 30px rgba(197, 160, 89, 0.3));
-  animation: logoPulse 4s ease-in-out infinite;
 }
 
-@keyframes logoPulse {
+.hero-logo {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 30px rgba(197, 160, 89, 0.3));
+  /* Start hidden — GSAP will reveal */
+  opacity: 0;
+  clip-path: inset(100% 0 0 0);
+}
+
+/* Horizontal scan-line that sweeps down the logo */
+.logo-scan-line {
+  position: absolute;
+  top: 0;
+  left: -10%;
+  width: 120%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold-light) 30%, #fff 50%, var(--gold-light) 70%, transparent 100%);
+  box-shadow: 0 0 20px 8px rgba(197, 160, 89, 0.5), 0 0 60px 15px rgba(197, 160, 89, 0.2);
+  opacity: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Expanding golden glow ring behind logo */
+.logo-glow-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197, 160, 89, 0.3) 0%, rgba(197, 160, 89, 0.05) 50%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* After rendering completes, logo breathes */
+@keyframes logoPulseAfterRender {
   0%, 100% { filter: drop-shadow(0 0 30px rgba(197, 160, 89, 0.3)); }
   50%      { filter: drop-shadow(0 0 50px rgba(197, 160, 89, 0.5)); }
+}
+
+/* Hero content elements start hidden for GSAP orchestration */
+.hero-title,
+.hero-tagline,
+.hero-badges,
+.hero-scroll-cue {
+  opacity: 0;
 }
 
 .hero-title {

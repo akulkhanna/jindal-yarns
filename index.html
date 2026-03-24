@@ -69,13 +69,17 @@
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
-      <img src="assets/brand_shield_logo.png" alt="Jindal Yarns Shield" class="hero-logo" fetchpriority="high">
-      <h1 class="hero-title">
+      <div class="logo-render-container" id="logoRenderContainer">
+        <img src="assets/brand_shield_logo.png" alt="Jindal Yarns Shield" class="hero-logo" id="heroLogo" fetchpriority="high">
+        <div class="logo-scan-line" id="logoScanLine"></div>
+        <div class="logo-glow-ring" id="logoGlowRing"></div>
+      </div>
+      <h1 class="hero-title" id="heroTitle">
         <span>The Art of Thread</span>
         <span>Since 1982</span>
       </h1>
-      <p class="hero-tagline">Crafting excellence in every fiber</p>
-      <div class="hero-badges">
+      <p class="hero-tagline" id="heroTagline">Crafting excellence in every fiber</p>
+      <div class="hero-badges" id="heroBadges">
         <div class="hero-badge">
           <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
           ISO 9001:2008 Certified
