@@ -387,56 +387,141 @@ h1, h2, h3, h4 {
   padding: 0 24px;
 }
 
-/* Logo Render Container */
-.logo-render-container {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 28px;
+/* ---------- Full-Screen Intro / Splash ---------- */
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.hero-logo {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto;
-  filter: drop-shadow(0 0 30px rgba(197, 160, 89, 0.3));
-  /* Start hidden — GSAP will reveal */
+.intro-bg-particles {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.05) 0%, transparent 60%);
+}
+
+.intro-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.intro-logo-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 32px;
+}
+
+.intro-logo {
+  width: 200px;
+  height: 200px;
   opacity: 0;
   clip-path: inset(100% 0 0 0);
+  filter: drop-shadow(0 0 40px rgba(197, 160, 89, 0.4));
 }
 
-/* Horizontal scan-line that sweeps down the logo */
-.logo-scan-line {
+.intro-scan-line {
   position: absolute;
   top: 0;
-  left: -10%;
-  width: 120%;
+  left: -15%;
+  width: 130%;
   height: 3px;
-  background: linear-gradient(90deg, transparent 0%, var(--gold-light) 30%, #fff 50%, var(--gold-light) 70%, transparent 100%);
-  box-shadow: 0 0 20px 8px rgba(197, 160, 89, 0.5), 0 0 60px 15px rgba(197, 160, 89, 0.2);
+  background: linear-gradient(90deg, transparent 0%, var(--gold-light) 25%, #fff 50%, var(--gold-light) 75%, transparent 100%);
+  box-shadow: 0 0 25px 10px rgba(197, 160, 89, 0.5), 0 0 80px 20px rgba(197, 160, 89, 0.2);
   opacity: 0;
   z-index: 5;
   pointer-events: none;
 }
 
-/* Expanding golden glow ring behind logo */
-.logo-glow-ring {
+.intro-glow-ring {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(197, 160, 89, 0.3) 0%, rgba(197, 160, 89, 0.05) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(197, 160, 89, 0.35) 0%, rgba(197, 160, 89, 0.05) 50%, transparent 70%);
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 0;
 }
 
+.intro-title {
+  opacity: 0;
+}
+
+.intro-title-line {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 40%, var(--text) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.intro-title-sub {
+  display: block;
+  font-family: var(--font-body);
+  font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+.intro-tagline {
+  font-family: var(--font-body);
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 24px;
+  opacity: 0;
+}
+
+.intro-line-decoration {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 24px auto 0;
+  opacity: 0;
+}
+
+.intro-screen.hidden {
+  pointer-events: none;
+}
+
+/* Logo Render Container — Hero (bigger after intro) */
+.logo-render-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 28px;
+}
+
+.hero-logo {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 40px rgba(197, 160, 89, 0.4));
+  opacity: 0;
+}
+
 /* After rendering completes, logo breathes */
 @keyframes logoPulseAfterRender {
   0%, 100% { filter: drop-shadow(0 0 30px rgba(197, 160, 89, 0.3)); }
-  50%      { filter: drop-shadow(0 0 50px rgba(197, 160, 89, 0.5)); }
+  50%      { filter: drop-shadow(0 0 60px rgba(197, 160, 89, 0.6)); }
 }
 
 /* Hero content elements start hidden for GSAP orchestration */

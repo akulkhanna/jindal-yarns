@@ -1,0 +1,38 @@
+name: Ralph Loop Autonomous Developer
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      objective:
+        description: 'Goal for the Ralph Loop execution'
+        required: true
+        type: string
+
+jobs:
+  run-ralph-loop:
+    name: Execute Ralph Loop
+    runs-on: ubuntu-latest
+    # Only run if triggered manually or if comment contains /ralph
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/ralph'))
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Ralph Loop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          API_KEY: ${{ secrets.OPENS_AI_KEY }}
+        run: |
+          echo "Starting autonomous Ralph Loop for Antigravity via External GitHub Actions integration..."
+          # Fetching 'ralph-loop' specific context external dependencies
+          npx gsd-antigravity-kit execute --loop --max-iterations 10

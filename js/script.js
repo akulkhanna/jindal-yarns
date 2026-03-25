@@ -570,131 +570,218 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeroIntro();
   });
 
-
   /* ========================================================
-     9. CINEMATIC HERO INTRO — Logo Rendering Animation
+     9. FULL-SCREEN CINEMATIC INTRO + HERO REVEAL
      ======================================================== */
   function initHeroIntro() {
     if (typeof gsap === 'undefined') {
-      // Fallback: just show everything if GSAP didn't load
+      // Fallback: show everything immediately
+      const introEl = document.getElementById('introScreen');
+      if (introEl) introEl.style.display = 'none';
       document.querySelectorAll('.hero-logo, .hero-title, .hero-tagline, .hero-badges, .hero-scroll-cue').forEach(el => {
         el.style.opacity = '1';
-        el.style.clipPath = 'none';
       });
       return;
     }
 
-    const logo = document.getElementById('heroLogo');
-    const scanLine = document.getElementById('logoScanLine');
-    const glowRing = document.getElementById('logoGlowRing');
-    const title = document.getElementById('heroTitle');
-    const tagline = document.getElementById('heroTagline');
-    const badges = document.getElementById('heroBadges');
+    // --- Intro Elements ---
+    const introScreen = document.getElementById('introScreen');
+    const introLogo = document.getElementById('introLogo');
+    const introScanLine = document.getElementById('introScanLine');
+    const introGlowRing = document.getElementById('introGlowRing');
+    const introTitle = document.getElementById('introTitle');
+    const introTagline = document.getElementById('introTagline');
+    const introLine = document.getElementById('introLine');
+
+    // --- Hero Elements ---
+    const heroLogo = document.getElementById('heroLogo');
+    const heroTitle = document.getElementById('heroTitle');
+    const heroTagline = document.getElementById('heroTagline');
+    const heroBadges = document.getElementById('heroBadges');
     const scrollCue = document.querySelector('.hero-scroll-cue');
 
-    if (!logo || !scanLine) return;
+    if (!introScreen || !introLogo) return;
 
-    const tl = gsap.timeline({ delay: 0.5 });
+    // Block scrolling during intro
+    document.body.style.overflow = 'hidden';
 
-    // Phase 1: Scan-line appears at the top of the logo container
-    tl.to(scanLine, {
+    // =============================================
+    // PHASE 1: FULL-SCREEN INTRO ANIMATION
+    // =============================================
+    const introTL = gsap.timeline({
+      delay: 0.3,
+      onComplete: startPhase2,
+    });
+
+    // 1a. Scan-line appears
+    introTL.to(introScanLine, {
       opacity: 1,
-      duration: 0.2,
+      duration: 0.3,
       ease: 'power2.in',
     })
 
-    // Phase 2: Scan-line sweeps down while revealing the logo via clip-path
-    .to(scanLine, {
+    // 1b. Scan-line sweeps down + logo reveals via clip-path
+    .to(introScanLine, {
       top: '100%',
-      duration: 1.4,
+      duration: 1.6,
       ease: 'power1.inOut',
     }, '<')
-    .to(logo, {
+    .to(introLogo, {
       opacity: 1,
       clipPath: 'inset(0% 0 0 0)',
-      duration: 1.4,
+      duration: 1.6,
       ease: 'power1.inOut',
     }, '<')
 
-    // Phase 3: Scan-line fades out at the bottom
-    .to(scanLine, {
+    // 1c. Scan-line fades
+    .to(introScanLine, {
       opacity: 0,
       duration: 0.3,
-      ease: 'power2.out',
     })
 
-    // Phase 4: Golden glow ring expands outward from logo center
-    .to(glowRing, {
-      width: 300,
-      height: 300,
+    // 1d. Glow ring burst
+    .to(introGlowRing, {
+      width: 400,
+      height: 400,
       opacity: 0.8,
       duration: 0.6,
       ease: 'power2.out',
     }, '-=0.2')
-    .to(glowRing, {
-      width: 500,
-      height: 500,
+    .to(introGlowRing, {
+      width: 700,
+      height: 700,
       opacity: 0,
       duration: 0.8,
       ease: 'power3.out',
     })
 
-    // Phase 5: Title lines reveal with stagger
-    .fromTo(title.querySelectorAll('span'), {
-      opacity: 0,
-      y: 40,
-      rotateX: 15,
-      filter: 'blur(8px)',
-    }, {
+    // 1e. Brand title fades in
+    .to(introTitle, {
       opacity: 1,
+      duration: 0.8,
+      ease: 'power2.out',
+    }, '-=0.6')
+    .fromTo(introTitle.querySelector('.intro-title-line'), {
+      y: 30,
+      filter: 'blur(6px)',
+    }, {
       y: 0,
-      rotateX: 0,
       filter: 'blur(0px)',
       duration: 0.8,
-      stagger: 0.2,
       ease: 'power3.out',
-    }, '-=0.5')
-    .set(title, { opacity: 1 }, '<')
-
-    // Phase 6: Tagline fades in
-    .fromTo(tagline, {
+    }, '<')
+    .fromTo(introTitle.querySelector('.intro-title-sub'), {
       opacity: 0,
-      y: 20,
-      letterSpacing: '0.5em',
+      letterSpacing: '0.6em',
     }, {
       opacity: 1,
-      y: 0,
-      letterSpacing: '0.2em',
+      letterSpacing: '0.35em',
       duration: 0.7,
       ease: 'power2.out',
-    }, '-=0.3')
+    }, '-=0.4')
 
-    // Phase 7: Badges slide up with stagger
-    .set(badges, { opacity: 1 })
-    .fromTo(badges.querySelectorAll('.hero-badge'), {
-      opacity: 0,
-      y: 25,
-      scale: 0.9,
-    }, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 0.5,
-      stagger: 0.15,
-      ease: 'back.out(1.4)',
-    }, '-=0.2')
-
-    // Phase 8: Scroll cue fades in last
-    .to(scrollCue, {
+    // 1f. Tagline fades in
+    .to(introTagline, {
       opacity: 1,
       duration: 0.6,
       ease: 'power2.out',
-    }, '-=0.1')
+    }, '-=0.2')
 
-    // Phase 9: After the timeline completes, start the perpetual breathing pulse
-    .call(() => {
-      logo.style.animation = 'logoPulseAfterRender 4s ease-in-out infinite';
-    });
+    // 1g. Decorative golden line expands
+    .to(introLine, {
+      opacity: 1,
+      width: 120,
+      duration: 0.5,
+      ease: 'power2.out',
+    }, '-=0.3')
+
+    // 1h. Hold the intro for a beat
+    .to({}, { duration: 0.8 });
+
+    // =============================================
+    // PHASE 2: TRANSITION TO HERO
+    // =============================================
+    function startPhase2() {
+      const heroTL = gsap.timeline();
+
+      // 2a. Slide the intro screen upward and fade out
+      heroTL.to(introScreen, {
+        yPercent: -100,
+        duration: 1.2,
+        ease: 'power3.inOut',
+      })
+
+      // 2b. Mark intro as hidden and re-enable scrolling
+      .call(() => {
+        introScreen.classList.add('hidden');
+        introScreen.style.display = 'none';
+        document.body.style.overflow = '';
+      })
+
+      // 2c. Hero logo fades in (already big at 200px)
+      .to(heroLogo, {
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+      }, '-=0.6')
+
+      // 2d. Title lines reveal with stagger
+      .set(heroTitle, { opacity: 1 })
+      .fromTo(heroTitle.querySelectorAll('span'), {
+        opacity: 0,
+        y: 40,
+        rotateX: 15,
+        filter: 'blur(8px)',
+      }, {
+        opacity: 1,
+        y: 0,
+        rotateX: 0,
+        filter: 'blur(0px)',
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power3.out',
+      }, '-=0.3')
+
+      // 2e. Tagline
+      .fromTo(heroTagline, {
+        opacity: 0,
+        y: 20,
+        letterSpacing: '0.5em',
+      }, {
+        opacity: 1,
+        y: 0,
+        letterSpacing: '0.2em',
+        duration: 0.7,
+        ease: 'power2.out',
+      }, '-=0.3')
+
+      // 2f. Badges pop in
+      .set(heroBadges, { opacity: 1 })
+      .fromTo(heroBadges.querySelectorAll('.hero-badge'), {
+        opacity: 0,
+        y: 25,
+        scale: 0.9,
+      }, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.5,
+        stagger: 0.15,
+        ease: 'back.out(1.4)',
+      }, '-=0.2')
+
+      // 2g. Scroll cue
+      .to(scrollCue, {
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power2.out',
+      }, '-=0.1')
+
+      // 2h. Start perpetual logo breathing
+      .call(() => {
+        heroLogo.style.animation = 'logoPulseAfterRender 4s ease-in-out infinite';
+      });
+    }
   }
 
 });
