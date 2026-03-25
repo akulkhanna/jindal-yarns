@@ -23,12 +23,15 @@
 
   <!-- ===================== FULL-SCREEN INTRO ===================== -->
   <div class="intro-screen" id="introScreen">
-    <div class="intro-bg-particles" id="introBgParticles"></div>
+    <!-- Full-viewport Three.js canvas for particle assembly -->
+    <canvas id="introCanvas"></canvas>
+    <!-- Hidden image for pixel sampling -->
+    <img src="assets/images/logo/brand_shield_logo.png" alt="" id="introLogoSource" crossorigin="anonymous" style="display:none;">
+    
     <div class="intro-content">
       <div class="intro-logo-container" id="introLogoContainer">
+        <!-- The assembled logo will be revealed here after particles converge -->
         <img src="assets/images/logo/brand_shield_logo.png" alt="Jindal Yarns" class="intro-logo" id="introLogo">
-        <div class="intro-scan-line" id="introScanLine"></div>
-        <div class="intro-glow-ring" id="introGlowRing"></div>
       </div>
       <h2 class="intro-title" id="introTitle">
         <span class="intro-title-line">Jindal Yarns</span>

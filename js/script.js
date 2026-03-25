@@ -571,10 +571,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ========================================================
-     9. FULL-SCREEN CINEMATIC INTRO + HERO REVEAL
+     9. THREAD ASSEMBLER — Logo Particle Assembly Intro
      ======================================================== */
   function initHeroIntro() {
-    if (typeof gsap === 'undefined') {
+    if (typeof gsap === 'undefined' || typeof THREE === 'undefined') {
       // Fallback: show everything immediately
       const introEl = document.getElementById('introScreen');
       if (introEl) introEl.style.display = 'none';
@@ -584,203 +584,373 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // --- Intro Elements ---
+    // --- DOM Refs ---
     const introScreen = document.getElementById('introScreen');
+    const introCanvas = document.getElementById('introCanvas');
+    const logoSource = document.getElementById('introLogoSource');
     const introLogo = document.getElementById('introLogo');
-    const introScanLine = document.getElementById('introScanLine');
-    const introGlowRing = document.getElementById('introGlowRing');
     const introTitle = document.getElementById('introTitle');
     const introTagline = document.getElementById('introTagline');
     const introLine = document.getElementById('introLine');
-
-    // --- Hero Elements ---
     const heroLogo = document.getElementById('heroLogo');
     const heroTitle = document.getElementById('heroTitle');
     const heroTagline = document.getElementById('heroTagline');
     const heroBadges = document.getElementById('heroBadges');
     const scrollCue = document.querySelector('.hero-scroll-cue');
 
-    if (!introScreen || !introLogo) return;
+    if (!introScreen || !introCanvas || !logoSource) return;
 
     // Block scrolling during intro
     document.body.style.overflow = 'hidden';
 
-    // =============================================
-    // PHASE 1: FULL-SCREEN INTRO ANIMATION
-    // =============================================
-    const introTL = gsap.timeline({
-      delay: 0.3,
-      onComplete: startPhase2,
+    // --- Setup Three.js for intro canvas ---
+    const renderer = new THREE.WebGLRenderer({
+      canvas: introCanvas,
+      antialias: false,
+      alpha: true,
     });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // 1a. Scan-line appears
-    introTL.to(introScanLine, {
-      opacity: 1,
-      duration: 0.3,
-      ease: 'power2.in',
-    })
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
 
-    // 1b. Scan-line sweeps down + logo reveals via clip-path
-    .to(introScanLine, {
-      top: '100%',
-      duration: 1.6,
-      ease: 'power1.inOut',
-    }, '<')
-    .to(introLogo, {
-      opacity: 1,
-      clipPath: 'inset(0% 0 0 0)',
-      duration: 1.6,
-      ease: 'power1.inOut',
-    }, '<')
+    // Mouse tracking for inertial rotation
+    let introMouseX = 0, introMouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+      introMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      introMouseY = -(e.clientY / window.innerHeight - 0.5) * 2;
+    }, { passive: true });
 
-    // 1c. Scan-line fades
-    .to(introScanLine, {
-      opacity: 0,
-      duration: 0.3,
-    })
+    // --- Sample logo pixels ---
+    function sampleLogoPixels(img, sampleSize) {
+      const offscreen = document.createElement('canvas');
+      const ctx = offscreen.getContext('2d');
+      offscreen.width = sampleSize;
+      offscreen.height = sampleSize;
+      ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
+      const imageData = ctx.getImageData(0, 0, sampleSize, sampleSize);
+      const pixels = imageData.data;
 
-    // 1d. Glow ring burst
-    .to(introGlowRing, {
-      width: 400,
-      height: 400,
-      opacity: 0.8,
-      duration: 0.6,
-      ease: 'power2.out',
-    }, '-=0.2')
-    .to(introGlowRing, {
-      width: 700,
-      height: 700,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-    })
+      const targets = [];
+      const step = 2; // Sample every 2nd pixel for density control
 
-    // 1e. Brand title fades in
-    .to(introTitle, {
-      opacity: 1,
-      duration: 0.8,
-      ease: 'power2.out',
-    }, '-=0.6')
-    .fromTo(introTitle.querySelector('.intro-title-line'), {
-      y: 30,
-      filter: 'blur(6px)',
-    }, {
-      y: 0,
-      filter: 'blur(0px)',
-      duration: 0.8,
-      ease: 'power3.out',
-    }, '<')
-    .fromTo(introTitle.querySelector('.intro-title-sub'), {
-      opacity: 0,
-      letterSpacing: '0.6em',
-    }, {
-      opacity: 1,
-      letterSpacing: '0.35em',
-      duration: 0.7,
-      ease: 'power2.out',
-    }, '-=0.4')
+      for (let y = 0; y < sampleSize; y += step) {
+        for (let x = 0; x < sampleSize; x += step) {
+          const i = (y * sampleSize + x) * 4;
+          const alpha = pixels[i + 3];
+          if (alpha > 80) { // Only use visible pixels
+            // Map pixel coords to 3D space (centered at 0,0)
+            const px = (x / sampleSize - 0.5) * 4;
+            const py = -(y / sampleSize - 0.5) * 4;
+            const r = pixels[i] / 255;
+            const g = pixels[i + 1] / 255;
+            const b = pixels[i + 2] / 255;
+            targets.push({ x: px, y: py, z: 0, r, g, b });
+          }
+        }
+      }
+      return targets;
+    }
 
-    // 1f. Tagline fades in
-    .to(introTagline, {
-      opacity: 1,
-      duration: 0.6,
-      ease: 'power2.out',
-    }, '-=0.2')
+    function buildParticleSystem(targets) {
+      const count = targets.length;
+      const geometry = new THREE.BufferGeometry();
+      const startPositions = new Float32Array(count * 3);
+      const endPositions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+      const sizes = new Float32Array(count);
+      const progress = { value: 0 }; // animated by GSAP
 
-    // 1g. Decorative golden line expands
-    .to(introLine, {
-      opacity: 1,
-      width: 120,
-      duration: 0.5,
-      ease: 'power2.out',
-    }, '-=0.3')
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        // Random scattered start positions (spread across a sphere)
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        const radius = 6 + Math.random() * 6;
+        startPositions[i3]     = radius * Math.sin(phi) * Math.cos(theta);
+        startPositions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+        startPositions[i3 + 2] = radius * Math.cos(phi) - 3;
 
-    // 1h. Hold the intro for a beat
-    .to({}, { duration: 0.8 });
+        // Target positions (logo shape)
+        endPositions[i3]     = targets[i].x;
+        endPositions[i3 + 1] = targets[i].y;
+        endPositions[i3 + 2] = targets[i].z;
 
-    // =============================================
-    // PHASE 2: TRANSITION TO HERO
-    // =============================================
+        // Use actual logo pixel colors, tinted gold
+        const goldMix = 0.4 + Math.random() * 0.3;
+        colors[i3]     = targets[i].r * (1 - goldMix) + 0.77 * goldMix;
+        colors[i3 + 1] = targets[i].g * (1 - goldMix) + 0.63 * goldMix;
+        colors[i3 + 2] = targets[i].b * (1 - goldMix) + 0.35 * goldMix;
+
+        sizes[i] = 1.5 + Math.random() * 2;
+      }
+
+      // Set initial positions to scattered
+      const currentPositions = new Float32Array(startPositions);
+      geometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+      // Soft glow shader
+      const vertexShader = `
+        attribute float size;
+        varying vec3 vColor;
+        void main() {
+          vColor = color;
+          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = size * (200.0 / -mvPos.z);
+          gl_Position = projectionMatrix * mvPos;
+        }
+      `;
+      const fragmentShader = `
+        varying vec3 vColor;
+        void main() {
+          float d = length(gl_PointCoord - vec2(0.5));
+          if (d > 0.5) discard;
+          float alpha = 1.0 - smoothstep(0.0, 0.5, d);
+          alpha *= 0.85;
+          gl_FragColor = vec4(vColor, alpha);
+        }
+      `;
+
+      const material = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        transparent: true,
+        depthWrite: false,
+        vertexColors: true,
+      });
+
+      const points = new THREE.Points(geometry, material);
+      scene.add(points);
+
+      // Add floating ambient threads for atmosphere
+      const threadGroup = new THREE.Group();
+      for (let t = 0; t < 12; t++) {
+        const curve = new THREE.CatmullRomCurve3([
+          new THREE.Vector3((Math.random()-0.5)*14, (Math.random()-0.5)*10, (Math.random()-0.5)*6 - 3),
+          new THREE.Vector3((Math.random()-0.5)*14, (Math.random()-0.5)*10, (Math.random()-0.5)*6 - 3),
+          new THREE.Vector3((Math.random()-0.5)*14, (Math.random()-0.5)*10, (Math.random()-0.5)*6 - 3),
+        ]);
+        const threadGeom = new THREE.TubeGeometry(curve, 32, 0.01, 4, false);
+        const threadMat = new THREE.MeshBasicMaterial({
+          color: new THREE.Color(0.77 * (0.5 + Math.random()*0.5), 0.63 * (0.5 + Math.random()*0.5), 0.35 * (0.5 + Math.random()*0.5)),
+          transparent: true,
+          opacity: 0.08 + Math.random() * 0.12,
+        });
+        threadGroup.add(new THREE.Mesh(threadGeom, threadMat));
+      }
+      scene.add(threadGroup);
+
+      return { geometry, points, startPositions, endPositions, currentPositions, progress, count, threadGroup };
+    }
+
+    // --- Animation Loop ---
+    function runIntroAnimation(system) {
+      const clock = new THREE.Clock();
+      let isAnimating = true;
+
+      function animate() {
+        if (!isAnimating) return;
+        requestAnimationFrame(animate);
+
+        const t = clock.getElapsedTime();
+        const p = system.progress.value;
+
+        // Interpolate positions: scattered → logo
+        for (let i = 0; i < system.count; i++) {
+          const i3 = i * 3;
+          // Ease each particle with slight individual variation
+          const individualDelay = (i / system.count) * 0.3;
+          const adjustedP = Math.max(0, Math.min(1, (p - individualDelay) / (1 - individualDelay)));
+          const easedP = adjustedP * adjustedP * (3 - 2 * adjustedP); // smoothstep
+
+          system.currentPositions[i3]     = system.startPositions[i3]     + (system.endPositions[i3]     - system.startPositions[i3])     * easedP;
+          system.currentPositions[i3 + 1] = system.startPositions[i3 + 1] + (system.endPositions[i3 + 1] - system.startPositions[i3 + 1]) * easedP;
+          system.currentPositions[i3 + 2] = system.startPositions[i3 + 2] + (system.endPositions[i3 + 2] - system.startPositions[i3 + 2]) * easedP;
+
+          // Add gentle float when not fully assembled
+          if (p < 0.95) {
+            system.currentPositions[i3]     += Math.sin(t * 0.8 + i * 0.1) * 0.02 * (1 - easedP);
+            system.currentPositions[i3 + 1] += Math.cos(t * 0.6 + i * 0.1) * 0.02 * (1 - easedP);
+          }
+        }
+        system.geometry.attributes.position.needsUpdate = true;
+
+        // Inertial mouse rotation
+        system.points.rotation.y += (introMouseX * 0.15 - system.points.rotation.y) * 0.03;
+        system.points.rotation.x += (introMouseY * 0.08 - system.points.rotation.x) * 0.03;
+        system.threadGroup.rotation.y = system.points.rotation.y * 0.5;
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      // GSAP animation: drive the progress from 0 → 1
+      const introTL = gsap.timeline({
+        delay: 0.5,
+        onComplete: () => {
+          // After assembly, cross-fade to real logo + reveal text
+          crossFadeToLogo(system, () => {
+            isAnimating = false;
+            renderer.dispose();
+          });
+        },
+      });
+
+      // Phase 1: Particles swirl inward (0 → 1)
+      introTL.to(system.progress, {
+        value: 1,
+        duration: 3.5,
+        ease: 'power2.inOut',
+      })
+      // Brief hold at assembled state
+      .to({}, { duration: 0.6 });
+    }
+
+    // --- Cross-fade from particles to real logo, then reveal text ---
+    function crossFadeToLogo(system, onRenderDone) {
+      const fadeOutTL = gsap.timeline();
+
+      // Fade out Three.js canvas
+      fadeOutTL.to(introCanvas, {
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.inOut',
+      })
+
+      // Fade in the real logo image
+      .to(introLogo, {
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power2.out',
+      }, '-=0.4')
+
+      // Title fades in
+      .to(introTitle, {
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+      }, '-=0.2')
+      .fromTo(introTitle.querySelector('.intro-title-line'), {
+        y: 30,
+        filter: 'blur(6px)',
+      }, {
+        y: 0,
+        filter: 'blur(0px)',
+        duration: 0.8,
+        ease: 'power3.out',
+      }, '<')
+      .fromTo(introTitle.querySelector('.intro-title-sub'), {
+        opacity: 0,
+        letterSpacing: '0.6em',
+      }, {
+        opacity: 1,
+        letterSpacing: '0.35em',
+        duration: 0.7,
+        ease: 'power2.out',
+      }, '-=0.4')
+
+      // Tagline
+      .to(introTagline, {
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power2.out',
+      }, '-=0.2')
+
+      // Decorative line
+      .to(introLine, {
+        opacity: 1,
+        width: 120,
+        duration: 0.5,
+        ease: 'power2.out',
+      }, '-=0.3')
+
+      // Hold
+      .to({}, { duration: 0.6 })
+
+      // Transition to hero
+      .call(() => {
+        onRenderDone();
+        startPhase2();
+      });
+    }
+
+    // --- Phase 2: Slide intro away, reveal hero ---
     function startPhase2() {
       const heroTL = gsap.timeline();
 
-      // 2a. Slide the intro screen upward and fade out
       heroTL.to(introScreen, {
         yPercent: -100,
         duration: 1.2,
         ease: 'power3.inOut',
       })
-
-      // 2b. Mark intro as hidden and re-enable scrolling
       .call(() => {
         introScreen.classList.add('hidden');
         introScreen.style.display = 'none';
         document.body.style.overflow = '';
       })
-
-      // 2c. Hero logo fades in (already big at 200px)
       .to(heroLogo, {
         opacity: 1,
         duration: 0.8,
         ease: 'power2.out',
       }, '-=0.6')
-
-      // 2d. Title lines reveal with stagger
       .set(heroTitle, { opacity: 1 })
       .fromTo(heroTitle.querySelectorAll('span'), {
-        opacity: 0,
-        y: 40,
-        rotateX: 15,
-        filter: 'blur(8px)',
+        opacity: 0, y: 40, rotateX: 15, filter: 'blur(8px)',
       }, {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        filter: 'blur(0px)',
-        duration: 0.8,
-        stagger: 0.2,
-        ease: 'power3.out',
+        opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)',
+        duration: 0.8, stagger: 0.2, ease: 'power3.out',
       }, '-=0.3')
-
-      // 2e. Tagline
       .fromTo(heroTagline, {
-        opacity: 0,
-        y: 20,
-        letterSpacing: '0.5em',
+        opacity: 0, y: 20, letterSpacing: '0.5em',
       }, {
-        opacity: 1,
-        y: 0,
-        letterSpacing: '0.2em',
-        duration: 0.7,
-        ease: 'power2.out',
+        opacity: 1, y: 0, letterSpacing: '0.2em',
+        duration: 0.7, ease: 'power2.out',
       }, '-=0.3')
-
-      // 2f. Badges pop in
       .set(heroBadges, { opacity: 1 })
       .fromTo(heroBadges.querySelectorAll('.hero-badge'), {
-        opacity: 0,
-        y: 25,
-        scale: 0.9,
+        opacity: 0, y: 25, scale: 0.9,
       }, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.5,
-        stagger: 0.15,
-        ease: 'back.out(1.4)',
+        opacity: 1, y: 0, scale: 1,
+        duration: 0.5, stagger: 0.15, ease: 'back.out(1.4)',
       }, '-=0.2')
-
-      // 2g. Scroll cue
       .to(scrollCue, {
-        opacity: 1,
-        duration: 0.6,
-        ease: 'power2.out',
+        opacity: 1, duration: 0.6, ease: 'power2.out',
       }, '-=0.1')
-
-      // 2h. Start perpetual logo breathing
       .call(() => {
         heroLogo.style.animation = 'logoPulseAfterRender 4s ease-in-out infinite';
       });
+    }
+
+    // --- Start: Wait for logo image to load, then go ---
+    function onLogoReady() {
+      const targets = sampleLogoPixels(logoSource, 128);
+      if (targets.length < 50) {
+        // Fallback if image sampling fails
+        introScreen.style.display = 'none';
+        document.body.style.overflow = '';
+        document.querySelectorAll('.hero-logo, .hero-title, .hero-tagline, .hero-badges, .hero-scroll-cue').forEach(el => {
+          el.style.opacity = '1';
+        });
+        return;
+      }
+      const system = buildParticleSystem(targets);
+      runIntroAnimation(system);
+    }
+
+    if (logoSource.complete && logoSource.naturalWidth > 0) {
+      onLogoReady();
+    } else {
+      logoSource.onload = onLogoReady;
+      logoSource.onerror = () => {
+        // Image failed — skip intro
+        introScreen.style.display = 'none';
+        document.body.style.overflow = '';
+      };
     }
   }
 
