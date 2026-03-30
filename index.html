@@ -45,6 +45,12 @@
   <!-- Film Grain -->
   <div class="grain-overlay" aria-hidden="true"></div>
 
+  <!-- Looming Mill Background (Parallax) -->
+  <div class="mill-bg-layer" id="millBg"></div>
+
+  <!-- Scanline Sweep -->
+  <div class="scanline-sweep" id="scanline"></div>
+
   <!-- Zoom Modal -->
   <div class="image-modal-backdrop" id="imageModal">
     <img src="" alt="Zoomed product view" id="modalImage">
@@ -167,64 +173,77 @@
     </div>
   </section>
 
-  <!-- ===================== YARN CATALOG ===================== -->
-  <section class="section yarn-catalog" id="yarn-catalog">
+  <!-- ===================== YARN MASTERPIECES (Magnetic Selection) ===================== -->
+  <section class="section magnetic-selection" id="yarn-catalog">
     <div class="container">
       <div class="section-header reveal">
-        <div class="section-label">Yarn Collection</div>
-        <h2 class="section-title">Premium Yarn<br>for Every Need</h2>
-        <p class="section-subtitle">From shoddy acrylic to fine half-wool blends, our yarn portfolio serves diverse global markets.</p>
+        <div class="section-label">Masterpieces</div>
+        <h2 class="section-title">The Industrial<br>Selection</h2>
+        <p class="section-subtitle">A curated collection of our most prestigious fiber outputs, designed for high-end manufacturing.</p>
       </div>
 
-      <div class="yarn-grid">
-        <!-- Card 1: Shoddy Acrylic -->
-        <div class="yarn-card reveal" data-tilt>
-          <div class="yarn-card-image">
-            <img src="assets/images/products/yarn_spools.png" alt="Shoddy Acrylic Yarn — vibrant color range" loading="lazy" decoding="async" class="zoomable" data-zoom-src="assets/images/products/yarn_spools.png">
-            <div class="zoom-overlay"><span>View Fiber Detail</span></div>
-          </div>
-          <div class="yarn-card-body">
-            <h3 class="yarn-card-title">Shoddy Acrylic Yarn</h3>
-            <p class="yarn-card-desc">Versatile acrylic yarn produced from recycled fibers. Available in a wide spectrum of vibrant colors for knitting, weaving, and industrial applications.</p>
-            <div class="yarn-card-specs">
-              <span class="yarn-spec">Recycled Fiber</span>
-              <span class="yarn-spec">Multi-Color</span>
-              <span class="yarn-spec">Industrial Grade</span>
-            </div>
+      <div class="magnetic-grid">
+        <div class="magnetic-item reveal" data-tilt>
+          <div class="magnetic-content">
+            <span class="magnetic-id">01</span>
+            <h3 class="magnetic-title">Acrylic</h3>
+            <p class="magnetic-meta">COUNT: 2/15s</p>
           </div>
         </div>
-
-        <!-- Card 2: Woollen / Half Wool -->
-        <div class="yarn-card reveal" data-tilt>
-          <div class="yarn-card-image">
-            <img src="assets/images/products/hero_yarn_texture.png" alt="Woollen and Half Wool Yarn — premium fiber" loading="lazy" decoding="async" class="zoomable" data-zoom-src="assets/images/products/hero_yarn_texture.png">
-            <div class="zoom-overlay"><span>View Fiber Detail</span></div>
-          </div>
-          <div class="yarn-card-body">
-            <h3 class="yarn-card-title">Woollen & Half Wool Yarn</h3>
-            <p class="yarn-card-desc">Premium 50% wool blended yarn offering the warmth and softness of natural wool with enhanced durability. Ideal for luxury blankets and apparel.</p>
-            <div class="yarn-card-specs">
-              <span class="yarn-spec">50% Wool</span>
-              <span class="yarn-spec">Natural Warmth</span>
-              <span class="yarn-spec">Luxury Grade</span>
-            </div>
+        <div class="magnetic-item reveal" data-tilt>
+          <div class="magnetic-content">
+            <span class="magnetic-id">02</span>
+            <h3 class="magnetic-title">Wool Blend</h3>
+            <p class="magnetic-meta">COUNT: 1/12s</p>
           </div>
         </div>
-
-        <!-- Card 3: Blended / Recycled Cotton -->
-        <div class="yarn-card reveal" data-tilt>
-          <div class="yarn-card-image">
-            <img src="assets/images/products/products_collection.png" alt="Blended and Recycled Cotton Yarn" loading="lazy" decoding="async" class="zoomable" data-zoom-src="assets/images/products/products_collection.png">
-            <div class="zoom-overlay"><span>View Fiber Detail</span></div>
+        <div class="magnetic-item reveal" data-tilt>
+          <div class="magnetic-content">
+            <span class="magnetic-id">03</span>
+            <h3 class="magnetic-title">Mink Soft</h3>
+            <p class="magnetic-meta">COUNT: 4/20s</p>
           </div>
-          <div class="yarn-card-body">
-            <h3 class="yarn-card-title">Blended & Recycled Cotton</h3>
-            <p class="yarn-card-desc">Sustainable cotton blended yarn available in both coloured and white variants. Eco-conscious manufacturing meets premium quality for modern textiles.</p>
-            <div class="yarn-card-specs">
-              <span class="yarn-spec">Recycled Cotton</span>
-              <span class="yarn-spec">Coloured / White</span>
-              <span class="yarn-spec">Eco-Friendly</span>
-            </div>
+        </div>
+        <div class="magnetic-item reveal" data-tilt>
+          <div class="magnetic-content">
+            <span class="magnetic-id">04</span>
+            <h3 class="magnetic-title">Silk Finish</h3>
+            <p class="magnetic-meta">COUNT: 1/10s</p>
+          </div>
+        </div>
+        <div class="magnetic-item reveal" data-tilt>
+          <div class="magnetic-content">
+            <span class="magnetic-id">05</span>
+            <h3 class="magnetic-title">Cotton Mix</h3>
+            <p class="magnetic-meta">COUNT: 2/24s</p>
+          </div>
+        </div>
+        <div class="magnetic-item reveal" data-tilt>
+          <div class="magnetic-content">
+            <span class="magnetic-id">06</span>
+            <h3 class="magnetic-title">Heavy Duty</h3>
+            <p class="magnetic-meta">COUNT: 1/6s</p>
+          </div>
+        </div>
+        <div class="magnetic-item reveal" data-tilt>
+          <div class="magnetic-content">
+            <span class="magnetic-id">07</span>
+            <h3 class="magnetic-title">Ultra Fine</h3>
+            <p class="magnetic-meta">COUNT: 2/32s</p>
+          </div>
+        </div>
+        <div class="magnetic-item reveal" data-tilt>
+          <div class="magnetic-content">
+            <span class="magnetic-id">08</span>
+            <h3 class="magnetic-title">Gilded Yarn</h3>
+            <p class="magnetic-meta">COUNT: 1/15s</p>
+          </div>
+        </div>
+        <div class="magnetic-item reveal" data-tilt>
+          <div class="magnetic-content">
+            <span class="magnetic-id">09</span>
+            <h3 class="magnetic-title">Obsidian</h3>
+            <p class="magnetic-meta">COUNT: 1/10s</p>
           </div>
         </div>
       </div>

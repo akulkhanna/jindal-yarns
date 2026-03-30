@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Hover effects on interactables
-    const interactables = document.querySelectorAll('a, button, .zoomable, .textiles-tab');
+    const interactables = document.querySelectorAll('a, button, .zoomable, .textiles-tab, .magnetic-item');
     interactables.forEach(el => {
       el.addEventListener('mouseenter', () => {
         cursorFollower.classList.add('active');
@@ -99,7 +99,69 @@ document.addEventListener('DOMContentLoaded', () => {
         const y = e.clientY - rect.top - rect.height / 2;
         // Move element slightly towards cursor
         gsap.to(el, { x: x * 0.2, y: y * 0.2, duration: 0.3, ease: 'power2.out' });
+        
+        // CSS variable updates for glow
+        if (el.classList.contains('magnetic-item')) {
+          const px = (e.clientX - rect.left) / rect.width * 100;
+          const py = (e.clientY - rect.top) / rect.height * 100;
+          el.style.setProperty('--x', `${px}%`);
+          el.style.setProperty('--y', `${py}%`);
+        }
       });
+    });
+  }
+
+  // --- Cinematic Background Controller (GSAP) ---
+  const millBg = document.getElementById('millBg');
+  if (millBg && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    // Basic Parallax
+    gsap.to(millBg, {
+      yPercent: 12,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: 'body',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true
+      }
+    });
+
+    // Sector 1: Zoom in on Heritage
+    gsap.to(millBg, {
+      scale: 1.3,
+      filter: 'grayscale(1) contrast(1.4) brightness(0.4) blur(0px)',
+      scrollTrigger: {
+        trigger: '#heritage',
+        start: 'top 80%',
+        end: 'bottom 20%',
+        scrub: 1
+      }
+    });
+
+    // Sector 2: Blur and Fade on Yarn Catalog (to focus on cards)
+    gsap.to(millBg, {
+      scale: 1.5,
+      opacity: 0.08,
+      filter: 'grayscale(1) contrast(1.2) brightness(0.3) blur(10px)',
+      scrollTrigger: {
+        trigger: '#yarn-catalog',
+        start: 'top 60%',
+        end: 'bottom 20%',
+        scrub: 1
+      }
+    });
+
+    // Sector 3: Restore slightly for Textiles
+    gsap.to(millBg, {
+      scale: 1.2,
+      opacity: 0.15,
+      filter: 'grayscale(1) contrast(1.3) brightness(0.4) blur(2px)',
+      scrollTrigger: {
+        trigger: '#home-textiles',
+        start: 'top 60%',
+        end: 'bottom 20%',
+        scrub: 1
+      }
     });
   }
 
@@ -370,6 +432,29 @@ document.addEventListener('DOMContentLoaded', () => {
         scrub: 1,
       },
     });
+
+    // --- Kinetic Typography (Hero) ---
+    const hTitle = document.getElementById('heroTitle');
+    if (hTitle) {
+      const words = hTitle.innerText.split(' ');
+      hTitle.innerHTML = words.map(w => `<span style="display:inline-block">${w}</span>`).join(' ');
+      
+      gsap.to('#heroTitle span', {
+        fontWeight: 900,
+        scale: 1.2,
+        color: '#C5A059',
+        stagger: {
+          amount: 0.5,
+          from: "center"
+        },
+        scrollTrigger: {
+          trigger: '.hero',
+          start: 'top top',
+          end: 'bottom 40%',
+          scrub: 1,
+        }
+      });
+    }
 
     // Heritage image parallax
     gsap.to('.heritage-image-wrapper img', {
@@ -882,6 +967,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Phase 2: Slide intro away, reveal hero ---
     function startPhase2() {
       const heroTL = gsap.timeline();
+      const scanline = document.getElementById('scanline');
+
+      // Scanline Swipe
+      if (scanline) {
+        heroTL.fromTo(scanline, {
+          top: '0%', opacity: 1, height: '2px'
+        }, {
+          top: '100%', opacity: 0, height: '10px',
+          duration: 1.2, ease: 'power3.inOut'
+        });
+      }
 
       heroTL.to(introScreen, {
         yPercent: -100,
