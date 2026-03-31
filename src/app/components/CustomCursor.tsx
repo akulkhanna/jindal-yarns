@@ -26,17 +26,11 @@ export function CustomCursor() {
   const mouseRef = useRef({ x: -100, y: -100 });
 
   useEffect(() => {
-    const updatePosition = () => {
-      cursorX.set(mouseRef.current.x);
-      cursorY.set(mouseRef.current.y);
-      trailX.set(mouseRef.current.x);
-      trailY.set(mouseRef.current.y);
-      rafRef.current = requestAnimationFrame(updatePosition);
-    };
-    rafRef.current = requestAnimationFrame(updatePosition);
-
     const onMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+      trailX.set(e.clientX);
+      trailY.set(e.clientY);
       setIsVisible(true);
     };
 

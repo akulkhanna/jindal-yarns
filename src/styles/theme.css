@@ -138,8 +138,7 @@
   html {
     font-size: var(--font-size);
     font-family: var(--font-family);
-    /* Smooth scrolling */
-    scroll-behavior: smooth;
+    /* Native smooth scroll disabled to prevent jitter with motion-driven parallax */
   }
 
   h1 {
