@@ -14,13 +14,21 @@ export function ThreeJSLogoIntro({ logoUrl, onReady, onComplete }: Props) {
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvasRef.current,
-      antialias: true,
-      alpha: true,
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvasRef.current,
+        antialias: true,
+        alpha: true,
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    } catch (e) {
+      console.warn('WebGL not supported, skipping cinematic intro.', e);
+      onReady();
+      onComplete();
+      return;
+    }
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -55,8 +63,22 @@ export function ThreeJSLogoIntro({ logoUrl, onReady, onComplete }: Props) {
 
     const img = new Image();
     img.src = logoUrl;
+    img.crossOrigin = 'anonymous'; // Important for canvas sampling on GH Pages
+    img.onerror = (err) => {
+      console.warn("Failed to load intro image, skipping cinematic intro.", err);
+      onReady();
+      onComplete();
+    };
     img.onload = () => {
-      const targets = sampleLogo(img);
+      let targets: { x: number, y: number, r: number, g: number, b: number }[] = [];
+      try {
+        targets = sampleLogo(img);
+      } catch (err) {
+        console.warn("Failed to sample intro image, skipping cinematic intro.", err);
+        onReady();
+        onComplete();
+        return;
+      }
       const count = targets.length;
       const geom = new THREE.BufferGeometry();
       const startPos = new Float32Array(count * 3);

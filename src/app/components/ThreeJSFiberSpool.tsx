@@ -10,9 +10,15 @@ export function ThreeJSFiberSpool() {
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    } catch (e) {
+      console.warn('WebGL not supported, skipping fiber spool.', e);
+      return;
+    }
     containerRef.current.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
