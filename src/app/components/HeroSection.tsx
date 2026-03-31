@@ -66,9 +66,16 @@ export function HeroSection() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.88]);
+  // Smoothed scroll progress for the hero
+  const smoothHeroProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  const y = useTransform(smoothHeroProgress, [0, 1], [0, 200]);
+  const opacity = useTransform(smoothHeroProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(smoothHeroProgress, [0, 1], [1, 0.88]);
 
   const scrambledTitle = useTextScramble('Premium Fiber', 800);
 

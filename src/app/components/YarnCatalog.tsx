@@ -11,8 +11,14 @@ export function YarnCatalog() {
     offset: ["start end", "end start"]
   });
 
-  const parallaxY = useTransform(scrollYProgress, [0, 1], [50, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.95, 1], [0, 1, 1, 0]);
+  const smoothCatalogProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  const parallaxY = useTransform(smoothCatalogProgress, [0, 1], [50, -50]);
+  const opacity = useTransform(smoothCatalogProgress, [0, 0.15, 0.95, 1], [0, 1, 1, 0]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
