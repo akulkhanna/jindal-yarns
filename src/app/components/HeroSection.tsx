@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { useRef, useState, useEffect } from 'react';
 import logoImage from '../../assets/437a2f181017e6f146c52fe9dbde9eec4d1d1933.png';
 import yarnBallsImage from '../../assets/eb9d82b244200300e8016bcef7574329f69b54ad.png';
