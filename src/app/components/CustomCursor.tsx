@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useSpring, useMotionValue } from 'motion/react';
+import { motion, useSpring, useMotionValue, AnimatePresence } from 'motion/react';
 
 type CursorState = 'default' | 'hover' | 'click' | 'text';
 

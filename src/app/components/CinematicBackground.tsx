@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useVelocity, useSpring } from 'motion/react';
 import { useRef } from 'react';
-import millBgImage from '../../assets/791e8438b4df591a5ecba4334360e2ed286ca6fd.png';
+import millBgImage from '../../assets/11f705cec3ceb825808316d836561b5ac3b31099.png';
 
 export function CinematicBackground() {
   const containerRef = useRef<HTMLDivElement>(null);
