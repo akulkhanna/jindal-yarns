@@ -17,6 +17,9 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress-bar" id="scrollProgress"></div>
+
   <!-- Custom High-Tech Cursor -->
   <div class="custom-cursor" id="customCursor"></div>
   <div class="custom-cursor-follower" id="customCursorFollower"></div>
@@ -26,7 +29,7 @@
     <!-- Full-viewport Three.js canvas for particle assembly -->
     <canvas id="introCanvas"></canvas>
     <!-- Hidden image for pixel sampling -->
-    <img src="assets/images/logo/brand_shield_logo.png" alt="" id="introLogoSource" crossorigin="anonymous" style="display:none;">
+    <img src="assets/images/logo/brand_shield_logo.png" alt="" id="introLogoSource" style="display:none;">
     
     <div class="intro-content">
       <div class="intro-logo-container" id="introLogoContainer">
@@ -58,7 +61,7 @@
 
   <!-- ===================== NAVIGATION ===================== -->
   <nav class="navbar" id="navbar">
-    <div class="nav-brand">
+    <div class="nav-brand magnetic-item">
       <img src="assets/images/logo/brand_shield_logo.png" alt="Jindal Yarns Logo" class="nav-logo" loading="eager">
       <div>
         <span class="nav-brand-text">Jindal Yarns</span>
@@ -96,7 +99,7 @@
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
-      <div class="logo-render-container" id="logoRenderContainer">
+      <div class="logo-render-container magnetic-item" id="logoRenderContainer">
         <img src="assets/images/logo/brand_shield_logo.png" alt="Jindal Yarns Shield" class="hero-logo" id="heroLogo" fetchpriority="high">
       </div>
       <h1 class="hero-title" id="heroTitle">

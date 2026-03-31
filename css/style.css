@@ -3,7 +3,7 @@
    ============================================================ */
 
 /* ---------- Google Fonts ---------- */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;600;800&display=swap');
 
 /* ---------- CSS Custom Properties ---------- */
 :root {
@@ -173,6 +173,20 @@ a:hover {
   background-color: rgba(197, 160, 89, 0.1);
   border-color: var(--gold);
   backdrop-filter: blur(2px);
+}
+
+/* ---------- Global Scroll Progress ---------- */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #C5A059 0%, #FFD600 50%, #FFF5D6 100%);
+  z-index: 10001;
+  width: 0%;
+  transform-origin: left;
+  box-shadow: 0 0 25px rgba(255, 214, 0, 0.4), 0 0 10px rgba(197, 160, 89, 0.6);
+  transition: width 0.1s ease-out; /* Smooth but responsive */
 }
 
 /* Scanline Sweep Intro */
@@ -530,8 +544,14 @@ h1, h2, h3, h4 {
   width: 200px;
   height: 200px;
   margin: 0 auto;
-  filter: drop-shadow(0 0 40px rgba(197, 160, 89, 0.4));
+  filter: drop-shadow(0 0 30px rgba(197, 160, 89, 0.3));
   opacity: 0;
+  transition: transform 0.6s cubic-bezier(0.2, 0, 0.2, 1), filter 0.6s ease;
+}
+
+.hero-logo:hover {
+  transform: scale(1.05) rotate(2deg);
+  filter: drop-shadow(0 0 60px rgba(255, 214, 0, 0.6)) brightness(1.2);
 }
 
 /* After rendering completes, logo breathes */
@@ -1298,7 +1318,7 @@ h1, h2, h3, h4 {
 
 .magnetic-item {
   aspect-ratio: 1;
-  background: rgba(26, 35, 126, 0.1);
+  background: rgba(26, 35, 126, 0.05); /* Lighter base */
   border: 1px solid var(--border);
   border-radius: 12px;
   display: flex;
@@ -1306,20 +1326,21 @@ h1, h2, h3, h4 {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(8px);
-  transition: border-color var(--transition), box-shadow var(--transition);
+  backdrop-filter: blur(8px) brightness(1.2);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
   cursor: none;
 }
 
 .magnetic-item:hover {
   border-color: var(--gold);
-  box-shadow: 0 0 40px rgba(255, 214, 0, 0.1);
+  box-shadow: 0 0 50px rgba(255, 214, 0, 0.15), inset 0 0 20px rgba(255, 214, 0, 0.05);
+  background: rgba(197, 160, 89, 0.08);
 }
 
 .magnetic-content {
   text-align: center;
   z-index: 2;
-  transition: transform 0.3s ease-out;
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
 .magnetic-id {
@@ -1333,12 +1354,13 @@ h1, h2, h3, h4 {
   line-height: 48px;
   border-radius: 50%;
   margin: 0 auto 20px;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.5s ease;
 }
 
 .magnetic-item:hover .magnetic-id {
-  transform: scale(1.1);
+  transform: scale(1.15) rotate(5deg);
   border-color: var(--gold);
+  box-shadow: 0 0 15px rgba(255, 214, 0, 0.3);
 }
 
 .magnetic-title {
@@ -1346,24 +1368,38 @@ h1, h2, h3, h4 {
   font-size: 1.4rem;
   color: var(--gold);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   margin-bottom: 8px;
+  filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
 }
 
 .magnetic-meta {
   font-family: var(--font-body);
   font-size: 0.65rem;
   color: var(--text-muted);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
 }
 
 .magnetic-item::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 214, 0, 0.1) 0%, transparent 60%);
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 214, 0, 0.15) 0%, transparent 70%);
   opacity: 0;
-  transition: opacity 0.5s;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+/* Texture Overlay for Tactile feel */
+.magnetic-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  pointer-events: none;
 }
 
 .magnetic-item:hover::before {

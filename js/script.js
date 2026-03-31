@@ -13,10 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileNav = document.getElementById('mobileNav');
   const navLinks  = document.querySelectorAll('.nav-links a, .nav-mobile a');
 
-  // Scroll-based navbar glass effect
+  // Scroll updates: Navbar & Progress Bar
+  const progressBar = document.getElementById('scrollProgress');
   let lastScroll = 0;
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = height > 0 ? (y / height) * 100 : 0;
+    
+    if (progressBar) {
+      progressBar.style.width = scrolled + '%';
+      // Interactive brightness on scroll velocity would be cool but simple gradient is more robust:
+      progressBar.style.background = `linear-gradient(90deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%)`;
+    }
     navbar.classList.toggle('scrolled', y > 60);
     lastScroll = y;
   }, { passive: true });
@@ -70,10 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
       cursor.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
     }, { passive: true });
 
-    // The ring follower interpolates smoothly
+    // The ring follower interpolates smoothly with a slightly slower lag for premium feel
     gsap.ticker.add(() => {
-      followerX += (mouseX - followerX) * 0.15;
-      followerY += (mouseY - followerY) * 0.15;
+      const lerp = 0.12;
+      followerX += (mouseX - followerX) * lerp;
+      followerY += (mouseY - followerY) * lerp;
       cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px)`;
     });
 
@@ -172,14 +182,37 @@ document.addEventListener('DOMContentLoaded', () => {
   function initWebGL() {
     if (typeof THREE === 'undefined') return;
 
+    function isWebGLAvailable() {
+      try {
+        const canvas = document.createElement('canvas');
+        return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+      } catch (e) { return false; }
+    }
+
+    if (!isWebGLAvailable()) {
+      console.warn("WebGL not supported. Skipping 3D background.");
+      return;
+    }
+
     const canvas = document.getElementById('webgl-canvas');
     if (!canvas) return;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: false,
-      alpha: true,
-    });
+    const renderer = (() => {
+      try {
+        return new THREE.WebGLRenderer({
+          canvas,
+          antialias: false,
+          alpha: true,
+          powerPreference: 'high-performance'
+        });
+      } catch (e) {
+        console.error("Renderer creation failed:", e);
+        return null;
+      }
+    })();
+    
+    if (!renderer) return;
+
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -625,7 +658,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     heroContent.style.transform = `translate(${x * 8}px, ${y * 5}px)`;
     if (heroLogo) {
-      heroLogo.style.transform = `translate(${x * -12}px, ${y * -8}px) rotate(${x * 2}deg)`;
+      // Magnetic effect on logo (stronger than text)
+      heroLogo.style.transform = `translate(${x * -20}px, ${y * -15}px) rotate(${x * 3}deg)`;
     }
   }, { passive: true });
 
@@ -659,18 +693,53 @@ document.addEventListener('DOMContentLoaded', () => {
      9. THREAD ASSEMBLER — Logo Particle Assembly Intro
      ======================================================== */
   function initHeroIntro() {
-    if (typeof gsap === 'undefined' || typeof THREE === 'undefined') {
-      // Fallback: show everything immediately
-      const introEl = document.getElementById('introScreen');
-      if (introEl) introEl.style.display = 'none';
+    const introScreen = document.getElementById('introScreen');
+    if (!introScreen) return;
+
+    // Fail-safe: Force hide intro after 10 seconds regardless of what happens
+    const introFailSafe = setTimeout(() => {
+      if (!introScreen.classList.contains('hidden')) {
+        console.warn("Intro stuck. Triggering fail-safe reveal.");
+        skipIntro();
+      }
+    }, 10000);
+
+    function skipIntro() {
+      clearTimeout(introFailSafe);
+      if (introScreen) {
+        introScreen.style.display = 'none';
+        introScreen.classList.add('hidden');
+      }
+      document.body.style.overflow = '';
       document.querySelectorAll('.hero-logo, .hero-title, .hero-tagline, .hero-badges, .hero-scroll-cue').forEach(el => {
         el.style.opacity = '1';
       });
+      // Breathe the logo immediately if skipped
+      const hLogo = document.getElementById('heroLogo');
+      if (hLogo) hLogo.style.animation = 'logoPulseAfterRender 4s ease-in-out infinite';
+    }
+
+    if (typeof gsap === 'undefined' || typeof THREE === 'undefined') {
+      skipIntro();
+      return;
+    }
+
+    // WebGL Check for intro
+    try {
+      const testCanvas = document.createElement('canvas');
+      const gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
+      if (!gl) {
+        console.warn("WebGL unavailable for intro.");
+        skipIntro();
+        return;
+      }
+    } catch (e) {
+      skipIntro();
       return;
     }
 
     // --- DOM Refs ---
-    const introScreen = document.getElementById('introScreen');
+    // (introScreen already defined above)
     const introCanvas = document.getElementById('introCanvas');
     const logoSource = document.getElementById('introLogoSource');
     const introLogo = document.getElementById('introLogo');
@@ -689,11 +758,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = 'hidden';
 
     // --- Setup Three.js for intro canvas ---
-    const renderer = new THREE.WebGLRenderer({
-      canvas: introCanvas,
-      antialias: false,
-      alpha: true,
-    });
+    const renderer = (() => {
+      try {
+        return new THREE.WebGLRenderer({
+          canvas: introCanvas,
+          antialias: false,
+          alpha: true,
+        });
+      } catch (e) {
+        console.error("Intro renderer failed:", e);
+        return null;
+      }
+    })();
+
+    if (!renderer) {
+      skipIntro();
+      return;
+    }
+    
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -714,29 +796,34 @@ document.addEventListener('DOMContentLoaded', () => {
       const ctx = offscreen.getContext('2d');
       offscreen.width = sampleSize;
       offscreen.height = sampleSize;
-      ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
-      const imageData = ctx.getImageData(0, 0, sampleSize, sampleSize);
-      const pixels = imageData.data;
+      try {
+        ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
+        const imageData = ctx.getImageData(0, 0, sampleSize, sampleSize);
+        const pixels = imageData.data;
 
-      const targets = [];
-      const step = 2; // Sample every 2nd pixel for density control
+        const targets = [];
+        const step = 2; // Sample every 2nd pixel for density control
 
-      for (let y = 0; y < sampleSize; y += step) {
-        for (let x = 0; x < sampleSize; x += step) {
-          const i = (y * sampleSize + x) * 4;
-          const alpha = pixels[i + 3];
-          if (alpha > 80) { // Only use visible pixels
-            // Map pixel coords to 3D space (centered at 0,0)
-            const px = (x / sampleSize - 0.5) * 4;
-            const py = -(y / sampleSize - 0.5) * 4;
-            const r = pixels[i] / 255;
-            const g = pixels[i + 1] / 255;
-            const b = pixels[i + 2] / 255;
-            targets.push({ x: px, y: py, z: 0, r, g, b });
+        for (let y = 0; y < sampleSize; y += step) {
+          for (let x = 0; x < sampleSize; x += step) {
+            const i = (y * sampleSize + x) * 4;
+            const alpha = pixels[i + 3];
+            if (alpha > 100) { // Slightly higher threshold for cleaner shape
+              // Map pixel coords to 3D space (centered at 0,0)
+              const px = (x / sampleSize - 0.5) * 4.5; // Slightly larger spread
+              const py = -(y / sampleSize - 0.5) * 4.5;
+              const r = pixels[i] / 255;
+              const g = pixels[i + 1] / 255;
+              const b = pixels[i + 2] / 255;
+              targets.push({ x: px, y: py, z: 0, r, g, b });
+            }
           }
         }
+        return targets;
+      } catch (e) {
+        console.error("Critical: getImageData failed. Likely CORS or untrusted source.", e);
+        return [];
       }
-      return targets;
     }
 
     function buildParticleSystem(targets) {
@@ -1027,11 +1114,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const targets = sampleLogoPixels(logoSource, 128);
       if (targets.length < 50) {
         // Fallback if image sampling fails
-        introScreen.style.display = 'none';
-        document.body.style.overflow = '';
-        document.querySelectorAll('.hero-logo, .hero-title, .hero-tagline, .hero-badges, .hero-scroll-cue').forEach(el => {
-          el.style.opacity = '1';
-        });
+        console.warn("Logo sampling failed or too few pixels. Skipping intro.");
+        skipIntro();
         return;
       }
       const system = buildParticleSystem(targets);
@@ -1044,10 +1128,12 @@ document.addEventListener('DOMContentLoaded', () => {
       logoSource.onload = onLogoReady;
       logoSource.onerror = () => {
         // Image failed — skip intro
-        introScreen.style.display = 'none';
-        document.body.style.overflow = '';
+        skipIntro();
       };
     }
   }
+
+  // Only one initialization block needed
+  // Note: first one is at line 663
 
 });
