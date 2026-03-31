@@ -1,29 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-
-// Dynamic library loader utility
-const loadScript = (url: string) => new Promise<void>((resolve) => {
-  const s = document.createElement('script');
-  s.src = url;
-  s.onload = () => resolve();
-  document.head.appendChild(s);
-});
+import { useEffect, useRef } from 'react';
+import * as THREE from 'three';
 
 export function ThreeJSFiberSpool() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [libsReady, setLibsReady] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
-      if (!(window as any).THREE) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js');
-      setLibsReady(true);
-    };
-    init();
-  }, []);
+    if (!containerRef.current) return;
 
-  useEffect(() => {
-    if (!libsReady || !containerRef.current) return;
-
-    const THREE = (window as any).THREE;
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight;
 
@@ -113,7 +96,7 @@ export function ThreeJSFiberSpool() {
       cancelAnimationFrame(raf);
       if (containerRef.current) containerRef.current.removeChild(renderer.domElement);
     };
-  }, [libsReady]);
+  }, []);
 
   return <div ref={containerRef} className="w-full h-full min-h-[300px]" />;
 }

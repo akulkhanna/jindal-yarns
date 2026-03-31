@@ -1,13 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-
-// Dynamic library loader utility
-const loadScript = (url: string) => new Promise<void>((resolve) => {
-  const s = document.createElement('script');
-  s.src = url;
-  s.onload = () => resolve();
-  document.head.appendChild(s);
-});
+import { useEffect, useRef } from 'react';
+import * as THREE from 'three';
+import { gsap } from 'gsap';
 
 interface Props {
   logoUrl: string;
@@ -17,22 +10,9 @@ interface Props {
 
 export function ThreeJSLogoIntro({ logoUrl, onReady, onComplete }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [libsReady, setLibsReady] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
-      if (!(window as any).THREE) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js');
-      if (!(window as any).gsap) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js');
-      setLibsReady(true);
-    };
-    init();
-  }, []);
-
-  useEffect(() => {
-    if (!libsReady || !canvasRef.current) return;
-
-    const THREE = (window as any).THREE;
-    const gsap = (window as any).gsap;
+    if (!canvasRef.current) return;
 
     const renderer = new THREE.WebGLRenderer({
       canvas: canvasRef.current,
@@ -183,7 +163,7 @@ export function ThreeJSLogoIntro({ logoUrl, onReady, onComplete }: Props) {
     return () => {
       // Clean up
     };
-  }, [libsReady, logoUrl, onReady, onComplete]);
+  }, [logoUrl, onReady, onComplete]);
 
   return <canvas ref={canvasRef} className="fixed inset-0 z-50 pointer-events-none" />;
 }
